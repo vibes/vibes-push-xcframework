@@ -1,0 +1,423 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7.2 (swiftlang-5.7.2.135.5 clang-1400.0.29.51)
+// swift-module-flags: -target arm64-apple-ios9.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name VibesPush
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+import Foundation
+import Swift
+import UIKit
+@_exported import VibesPush
+import _Concurrency
+import _StringProcessing
+@objc public enum TrackedEventType : Swift.Int {
+  case undefined
+  case launch
+  case clickthru
+  case inboxopen
+  case inboxfetch
+  public static let all: [VibesPush.TrackedEventType]
+  public static func convert(rawValue: Swift.String) -> VibesPush.TrackedEventType
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public protocol VibesLocalValueType {
+  static func archive(value: Self) -> Foundation.Data
+  static func unarchive(data: Foundation.Data) -> Self?
+}
+extension VibesPush.VibesLocalValueType {
+  public static func archive(value: Self) -> Foundation.Data
+  public static func unarchive(data: Foundation.Data) -> Self?
+}
+extension Swift.String : VibesPush.VibesLocalValueType {
+  public static func archive(value: Swift.String) -> Foundation.Data
+  public static func unarchive(data: Foundation.Data) -> Swift.String?
+}
+extension Swift.Dictionary : VibesPush.VibesLocalValueType {
+  public static func archive(value: Swift.Dictionary<Key, Value>) -> Foundation.Data
+  public static func unarchive(data: Foundation.Data) -> Swift.Dictionary<Key, Value>?
+}
+public struct LocalValue<T> where T : VibesPush.VibesLocalValueType {
+}
+@objc @objcMembers public class VibesConfiguration : ObjectiveC.NSObject {
+  @objc public var advertisingId: Swift.String?
+  @objc final public let apiUrl: Swift.String
+  @objc public var trackingApiUrl: Swift.String
+  @objc public var logger: VibesPush.CombinedLogger?
+  @objc final public let storageType: VibesPush.VibesStorageEnum
+  @objc public var trackedEventTypes: Foundation.NSArray
+  @objc public var vibesAPIURL: Foundation.URL {
+    @objc get
+  }
+  @objc public var vibesTrackingAPIURL: Foundation.URL {
+    @objc get
+  }
+  @objc public func enableDevLogging(level: VibesPush.LogLevel = .verbose)
+  @objc public func disableDevLogging()
+  @objc public init(advertisingId: Swift.String? = nil, apiUrl: Swift.String? = nil, trackingApiUrl: Swift.String? = nil, logger: VibesPush.VibesLogger? = nil, storageType: VibesPush.VibesStorageEnum = .KEYCHAIN, trackedEventTypes: Foundation.NSArray = TrackedEventType.all as NSArray)
+  @objc deinit
+}
+extension Foundation.Date {
+  public static var logPrefix: Swift.String {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers @objc public class CombinedLogger : ObjectiveC.NSObject, VibesPush.VibesLogger {
+  public var customLogger: VibesPush.VibesLogger?
+  public var consoleLogger: VibesPush.ConsoleLogger? {
+    get
+  }
+  @objc public func log(_ logObject: VibesPush.LogObject)
+  @objc public func log(request: Foundation.URLRequest)
+  @objc public func log(response: Foundation.URLResponse, data: Foundation.Data?)
+  @objc public func log(error: Swift.Error)
+  @objc deinit
+}
+public protocol LocalObjectType {
+  var attributes: [Swift.String : Any] { get }
+  init?(attributes: [Swift.String : Any])
+}
+public struct LocalObject<T> where T : VibesPush.LocalObjectType {
+}
+extension Foundation.URLRequest {
+  public var urlDescription: Swift.String {
+    get
+  }
+  public var methodDescription: Swift.String {
+    get
+  }
+  public var headerFieldsDescription: Swift.String {
+    get
+  }
+  public var bodyDescription: Swift.String {
+    get
+  }
+}
+extension Foundation.HTTPURLResponse {
+  public var responseCodeDescription: Swift.String {
+    get
+  }
+  public var headersDescription: Swift.String {
+    get
+  }
+}
+extension Foundation.Data {
+  public func asDict() -> [Swift.String : Any]?
+}
+extension Foundation.Data {
+  public func toString() -> Swift.String
+}
+public func == (lhs: [Swift.String : Any], rhs: [Swift.String : Any]) -> Swift.Bool
+public struct VibesCredential {
+  public let deviceId: Swift.String
+  public let authToken: Swift.String
+}
+extension VibesPush.VibesCredential : Swift.Equatable {
+  public static func == (lhs: VibesPush.VibesCredential, rhs: VibesPush.VibesCredential) -> Swift.Bool
+}
+extension VibesPush.VibesCredential : VibesPush.LocalObjectType {
+  public var attributes: [Swift.String : Any] {
+    get
+  }
+  public init?(attributes: [Swift.String : Any])
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class Product : ObjectiveC.NSObject, VibesPush.LocalObjectType {
+  @objc public var attributes: [Swift.String : Any] {
+    @objc get
+  }
+  @objc public var id: Swift.String?
+  public var price: Swift.Double?
+  @objc public var name: Swift.String?
+  @objc public var brand: Swift.String?
+  @objc public var category: Swift.String?
+  @objc public var variant: Swift.String?
+  @objc public var quantity: Swift.String?
+  @objc public var coupon: Swift.String?
+  @objc public var position: Swift.String?
+  @objc public init(id: Swift.String, price: Swift.Double, name: Swift.String, brand: Swift.String, category: Swift.String, variant: Swift.String, quantity: Swift.String, coupon: Swift.String, position: Swift.String)
+  @objc required convenience public init?(attributes: [Swift.String : Any])
+  @objc deinit
+}
+public func == (lhs: VibesPush.Product, rhs: VibesPush.Product) -> Swift.Bool
+@objc public protocol VibesLogger {
+  @objc func log(_ logObject: VibesPush.LogObject)
+  @objc func log(request: Foundation.URLRequest)
+  @objc func log(response: Foundation.URLResponse, data: Foundation.Data?)
+  @objc func log(error: Swift.Error)
+}
+@objc public class LogObject : ObjectiveC.NSObject {
+  @objc final public let level: VibesPush.LogLevel
+  @objc final public let message: Swift.String
+  public init(_ level: VibesPush.LogLevel, message: Swift.String)
+  @objc deinit
+}
+@objc public enum LogLevel : Swift.Int {
+  case verbose = 0
+  case info
+  case error
+  public var logPrefix: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public protocol VibesAPIDelegate {
+  @objc optional func didRegisterDevice(deviceId: Swift.String?, error: Swift.Error?)
+  @objc optional func didUnregisterDevice(error: Swift.Error?)
+  @objc optional func didRegisterPush(error: Swift.Error?)
+  @objc optional func didUnregisterPush(error: Swift.Error?)
+  @objc optional func didUpdateDevice(error: Swift.Error?)
+  @objc optional func didAssociatePerson(error: Swift.Error?)
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class Purchase : ObjectiveC.NSObject, VibesPush.LocalObjectType {
+  @objc public var attributes: [Swift.String : Any] {
+    @objc get
+  }
+  @objc public var id: Swift.String?
+  @objc public var affiliation: Swift.String?
+  public var revenue: Swift.Double?
+  public var tax: Swift.Double?
+  public var shipping: Swift.Double?
+  public var coupon: Swift.Double?
+  @objc public var list: Swift.String?
+  @objc public var step: Swift.String?
+  @objc public var option: Swift.String?
+  @objc public var products: [VibesPush.Product]?
+  @objc public init(id: Swift.String, affiliation: Swift.String, revenue: Swift.Double, tax: Swift.Double, shipping: Swift.Double, coupon: Swift.Double, list: Swift.String, step: Swift.String, option: Swift.String, products: [VibesPush.Product])
+  @objc required convenience public init?(attributes: [Swift.String : Any])
+  @objc deinit
+}
+public func == (lhs: VibesPush.Purchase, rhs: VibesPush.Purchase) -> Swift.Bool
+public enum VibesError : Swift.Error {
+  case noCredentials
+  case noPushToken
+  case authFailed(Swift.String)
+  case noEvents
+  case tooManyEventTypes
+  case other(Swift.String)
+  public var description: Swift.String {
+    get
+  }
+}
+public enum VibesResult<T> {
+  case success(T)
+  case failure(VibesPush.VibesError)
+}
+public enum ProductAction : Swift.String {
+  case click
+  case detail
+  case add
+  case remove
+  case checkout
+  case checkoutOption
+  case promoClick
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum PurchaseAction : Swift.String {
+  case purchase
+  case refund
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct GitTag {
+}
+@_hasMissingDesignatedInitializers @objc public class ConsoleLogger : ObjectiveC.NSObject, VibesPush.VibesLogger {
+  @objc public func log(_ logObject: VibesPush.LogObject)
+  @objc public func log(request: Foundation.URLRequest)
+  @objc public func log(response: Foundation.URLResponse, data: Foundation.Data? = nil)
+  @objc public func log(error: Swift.Error)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class InboxMessage : ObjectiveC.NSObject, VibesPush.LocalObjectType {
+  @objc public var attributes: [Swift.String : Any] {
+    @objc get
+  }
+  @objc public func encodeJSON() -> VibesPush.VibesJSONDictionary
+  @objc public var jsonString: Swift.String? {
+    @objc get
+  }
+  @objc public var mainImage: Swift.String? {
+    @objc get
+  }
+  @objc public var iconImage: Swift.String? {
+    @objc get
+  }
+  @objc public var inboxMessageUID: Swift.String? {
+    @objc get
+  }
+  @objc public var messageUID: Swift.String! {
+    get
+  }
+  @objc public var collapseKey: Swift.String? {
+    get
+  }
+  @objc public var subject: Swift.String?
+  @objc public var content: Swift.String!
+  @objc public var detail: Swift.String? {
+    get
+  }
+  @objc public var read: Swift.Bool
+  @objc public var images: [Swift.String : Swift.String] {
+    get
+  }
+  @objc public var inboxCustomData: VibesPush.VibesJSONDictionary {
+    get
+  }
+  @objc public var clientAppData: VibesPush.VibesJSONDictionary {
+    get
+  }
+  @objc public var apprefData: VibesPush.VibesJSONDictionary {
+    get
+  }
+  @objc public var expiresAt: Foundation.Date?
+  @objc public var createdAt: Foundation.Date {
+    get
+  }
+  @objc required convenience public init?(attributes: [Swift.String : Any])
+  @objc deinit
+}
+public func == (lhs: VibesPush.InboxMessage, rhs: VibesPush.InboxMessage) -> Swift.Bool
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class VibesAppInfo : ObjectiveC.NSObject, VibesPush.LocalObjectType {
+  @objc public var attributes: [Swift.String : Any] {
+    @objc get
+  }
+  @objc public func encodeJSON() -> VibesPush.VibesJSONDictionary
+  @objc public var jsonString: Swift.String? {
+    @objc get
+  }
+  @objc public var appId: Swift.String! {
+    get
+  }
+  @objc public var inboxEnabled: Swift.Bool {
+    get
+  }
+  @objc required convenience public init?(attributes: [Swift.String : Any])
+  @objc deinit
+}
+public typealias VibesCompletion<A> = (VibesPush.VibesResult<A>) -> Swift.Void
+public typealias GetInboxMessageCallback = (_ message: VibesPush.InboxMessage?, _ error: Swift.Error?) -> Swift.Void
+public typealias GetGitTagsCallback = (_ tags: [VibesPush.GitTag], _ error: Swift.Error?) -> Swift.Void
+public typealias GetInboxMessagesCallback = (_ messages: [VibesPush.InboxMessage], _ error: Swift.Error?) -> Swift.Void
+public typealias UpdateMessageCallback = (_ messages: VibesPush.InboxMessage?, _ error: Swift.Error?) -> Swift.Void
+public typealias GetPersonCallback = (_ person: VibesPush.Person?, _ error: Swift.Error?) -> Swift.Void
+public typealias GetVibesAppInfoCallback = (_ status: VibesPush.VibesAppInfo?, _ error: Swift.Error?) -> Swift.Void
+public typealias TrackProductActionCallback = (_ error: Swift.Error?) -> Swift.Void
+public typealias TrackPurchaseActionCallback = (_ error: Swift.Error?) -> Swift.Void
+@objc public enum VibesStorageEnum : Swift.Int {
+  case KEYCHAIN
+  case USERDEFAULTS
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@_hasMissingDesignatedInitializers @objc public class Vibes : ObjectiveC.NSObject {
+  public static let SDK_VERSION: Swift.String
+  public static let CURRENT_APP_ID: Swift.String
+  final public let configuration: VibesPush.VibesConfiguration
+  public static let REGISTER_PUSH_STATUS: Swift.String
+  @objc weak public var delegate: VibesPush.VibesAPIDelegate?
+  @objc public static var shared: VibesPush.Vibes! {
+    @objc get
+  }
+  @objc public var pushToken: Swift.String? {
+    @objc get
+  }
+  public static let isRunningThroughUnitTest: Swift.Bool
+  @objc public func set(delegate: VibesPush.VibesAPIDelegate)
+  @objc public func enablePush()
+  @objc public func disablePush()
+  @objc public func isDeviceRegistered() -> Swift.Bool
+  @objc public func isDevicePushRegistered() -> Swift.Bool
+  @objc public func setPushToken(fromData data: Foundation.Data)
+  @objc public func receivedPush(with userInfo: [Swift.AnyHashable : Any], at timestamp: Foundation.Date = Date())
+  @objc public func registerDevice()
+  @objc public func unregisterDevice()
+  @objc public func updateDevice(lat: Foundation.NSNumber? = nil, long: Foundation.NSNumber? = nil, updateCredentials: Swift.Bool)
+  @objc public func associatePerson(externalPersonId: Swift.String)
+  @objc public func registerPush()
+  @objc public func unregisterPush()
+  @objc public func getPerson(_ callback: VibesPush.GetPersonCallback?)
+  @objc public func getAppInfo(_ callback: VibesPush.GetVibesAppInfoCallback?)
+  @objc public func fetchInboxMessages(_ callback: VibesPush.GetInboxMessagesCallback?)
+  @objc public func fetchInboxMessage(messageUID: Swift.String, _ callback: @escaping VibesPush.GetInboxMessageCallback)
+  @objc public func markInboxMessageAsRead(messageUID: Swift.String, _ callback: @escaping VibesPush.UpdateMessageCallback)
+  @objc public func expireInboxMessage(messageUID: Swift.String, date: Foundation.Date = Date(), _ callback: @escaping VibesPush.UpdateMessageCallback)
+  @objc public func onInboxMessageOpen(inboxMessage: VibesPush.InboxMessage)
+  @objc public func onInboxMessagesFetched()
+  @objc public func trackClick(product: VibesPush.Product, activityUid: Swift.String? = nil, completion: VibesPush.TrackProductActionCallback?)
+  @objc public func trackAdd(product: VibesPush.Product, activityUid: Swift.String? = nil, completion: VibesPush.TrackProductActionCallback?)
+  @objc public func trackDetail(product: VibesPush.Product, activityUid: Swift.String? = nil, completion: VibesPush.TrackProductActionCallback?)
+  @objc public func getTrackingData() -> VibesPush.VibesTrackingData?
+  @objc public func trackPurchase(purchase: VibesPush.Purchase, activityUid: Swift.String?, completion: VibesPush.TrackProductActionCallback?)
+  @objc deinit
+}
+extension VibesPush.Vibes {
+  @objc public static func configure(appId: Swift.String, configuration: VibesPush.VibesConfiguration? = nil)
+}
+extension Swift.Sequence where Self.Element : Swift.Equatable {
+  public var firstUniqueElements: [Self.Element] {
+    get
+  }
+}
+public typealias VibesJSONDictionary = [Swift.String : Swift.AnyObject]
+public typealias VibesTrackingData = [Swift.String : Any]
+extension Foundation.Formatter {
+  public static let iso8601: Foundation.DateFormatter
+}
+extension Foundation.Date {
+  public var iso8601: Swift.String {
+    get
+  }
+  public var iso8601WithUpdatingTimezone: Swift.String {
+    get
+  }
+}
+extension Swift.String {
+  public var iso8601: Foundation.Date? {
+    get
+  }
+}
+public protocol LocalStorageType {
+  func get<T>(_ item: VibesPush.LocalValue<T>) -> T? where T : VibesPush.VibesLocalValueType
+  @discardableResult
+  func set<T>(_ value: T?, for item: VibesPush.LocalValue<T>) -> Swift.Bool where T : VibesPush.VibesLocalValueType
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @objcMembers public class Person : ObjectiveC.NSObject, VibesPush.LocalObjectType {
+  @objc public var attributes: [Swift.String : Any] {
+    @objc get
+  }
+  @objc public var externalPersonId: Swift.String?
+  @objc public var mdn: Swift.String?
+  @objc public var personKey: Swift.String?
+  @objc required convenience public init?(attributes: [Swift.String : Any])
+  @objc deinit
+}
+public func == (lhs: VibesPush.Person, rhs: VibesPush.Person) -> Swift.Bool
+extension VibesPush.TrackedEventType : Swift.Equatable {}
+extension VibesPush.TrackedEventType : Swift.Hashable {}
+extension VibesPush.TrackedEventType : Swift.RawRepresentable {}
+extension VibesPush.LogLevel : Swift.Equatable {}
+extension VibesPush.LogLevel : Swift.Hashable {}
+extension VibesPush.LogLevel : Swift.RawRepresentable {}
+extension VibesPush.ProductAction : Swift.Equatable {}
+extension VibesPush.ProductAction : Swift.Hashable {}
+extension VibesPush.ProductAction : Swift.RawRepresentable {}
+extension VibesPush.PurchaseAction : Swift.Equatable {}
+extension VibesPush.PurchaseAction : Swift.Hashable {}
+extension VibesPush.PurchaseAction : Swift.RawRepresentable {}
+extension VibesPush.VibesStorageEnum : Swift.Equatable {}
+extension VibesPush.VibesStorageEnum : Swift.Hashable {}
+extension VibesPush.VibesStorageEnum : Swift.RawRepresentable {}
